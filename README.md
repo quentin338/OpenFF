@@ -3,7 +3,7 @@ Project 5 OC - OpenFoodFacts
 
 ***
 
-# This program will
+## This program will
 
 - *Connect to OpFF API (site)*
 - *Retrieve the data needed (which one ?)*
@@ -14,29 +14,35 @@ Project 5 OC - OpenFoodFacts
 
 ***
 
-# Modules needed
+## Modules needed
 
 - *requests*
 - *mysql-connector*
 
 ***
 
-# TODO
+## TODO
 
-- Finishing MySQL course
-- Getting more familiar with OpFF API/Site
-- Trello
-- Relational model for the DB - **UML**
-- Learning requests module
-- Learning mysql-connector module
-- Getting sh**s done
+- *Finishing MySQL course*
+- *Getting more familiar with OpFF API/Site*
+- *Trello*
+- *Relational model for the DB* - **UML**
+- *Learning requests module*
+- *Learning mysql-connector module*
+- *Getting sh**s done*
 
 ***
 
-# Need to zip and upload at the end
+## Need to zip and upload at the end
 
-- Text to explain problems/answers/why - PDF 2 pages max with github link
-- Trello
-- Text with github link only ?
-- Script to create DB (github ?)
-- Relational model - StarUML
+- *Text to explain problems/answers/why* - *PDF 2 pages max with github link*
+- *Trello*
+- *Text with github link only ?*
+- *Script to create DB (github ?)*
+- *Relational model - StarUML*
+
+***
+
+### Done
+
+- *Trello :* https://trello.com/b/pyN13GCV/openfoodfacts 
