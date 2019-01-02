@@ -1,12 +1,15 @@
 import requests
 import json
 from os import listdir
+from _collections import defaultdict
 
 from constants import products_json, number_of_products
-from creating_database import creating_database, creating_tables
+# from creating_database import creating_database, creating_tables
 
 
 def get_products():
+
+    products_data = {"products": []}
 
     if products_json not in listdir():
 
@@ -47,36 +50,36 @@ def get_products():
 
                     product_url = each_product['url']
 
-                    output_to_json(category_name, name_product, note_product, selling_points, product_url)
+                    products_data['products'].append({
+                             'category_name': category_name,
+                             'name_product': name_product,
+                             'note_product': note_product,
+                             'selling points': selling_points,
+                             'product_url': product_url})
 
                 else:
                     pass
 
-        print("All products outputted")
-
+        try:
+            output_to_json(products_data)
+            print("All products outputted")
+        except NameError:
+            pass
     else:
         print('Products already downloaded to a json file')
         pass
 
 
-def output_to_json(category, name, note, selling_points, url):
-
-    product_data = {
-        'category_name': category,
-        'name_product': name,
-        'note_product': note,
-        'selling points': selling_points,
-        'product_url': url
-    }
+def output_to_json(dict_to_dump):
 
     with open(products_json, 'a', encoding='utf-8') as outfile:
-        json.dump(product_data, outfile, ensure_ascii=False, indent=4)
+        json.dump(dict_to_dump, outfile, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
     get_products()
 # creating database()
-    creating_database()
-    creating_tables()
+#     creating_database()
+#     creating_tables()
 # json to database()
 # interactive program beginning()
