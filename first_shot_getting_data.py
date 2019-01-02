@@ -25,9 +25,9 @@ def get_products():
 
         ### GET a list of X products from full_url ###
 
-            get_x_products = requests.get(full_url)
+            all_products = requests.get(full_url)
 
-            list_products = get_x_products.json()["products"]
+            list_products = all_products.json()["products"]
 
         ### Excluding all products with no fr notes, no name, no stores + TBD ###
 
