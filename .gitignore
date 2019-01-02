@@ -1,5 +1,6 @@
 /venv
 /.idea
 /.git
+/__pycache__
 products_output.json
 userpassdb.py

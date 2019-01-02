@@ -1,6 +1,7 @@
 import mysql.connector
 from constants import host, dbname
 from userpassdb import username, userpass
+from tables import *
 
 
 def creating_database():
@@ -15,6 +16,9 @@ def creating_database():
 
     mycursor.execute(f"CREATE DATABASE IF NOT EXISTS {dbname} CHARACTER SET 'utf8mb4'")
 
+    mycursor.close()
+    mydb.close()
+
 
 def creating_tables():
 
@@ -27,9 +31,14 @@ def creating_tables():
 
     mycursor = mydb.cursor()
 
-    mycursor.execute(f"USE {dbname}")
+    ### Creating tables
 
-    mycursor.execute()
+    for table_name in TABLES:
+        table_description = TABLES[table_name]
+        mycursor.execute(table_description)
+
+    mycursor.close()
+    mydb.close()
 
 
 creating_database()

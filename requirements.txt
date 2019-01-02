@@ -1,2 +1,2 @@
 requests == 2.21.0
-mysql-connector-python == 8.0.13
+mysql-connector == 2.1.6
