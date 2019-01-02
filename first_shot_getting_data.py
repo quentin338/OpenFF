@@ -1,48 +1,75 @@
 import requests
+import json
+from os import listdir
+from constants import products_json, number_of_products
 
 
-### Connecting to OpenFF and getting the first 10 categories ###
+def get_products():
 
-get_all_categories = requests.get('https://fr.openfoodfacts.org/categories?json=true')
-first_ten_categories = get_all_categories.json()['tags'][:10]
+    if products_json not in listdir():
 
-### URL of categories are the names with "-" in between. Loop to work with one category at a time. ###
+        ### Connecting to OpenFF and getting the first 10 categories ###
 
-number_of_products = 20  # Need to make this variable in other file ?
+        all_categories = requests.get('https://fr.openfoodfacts.org/categories?json=true')
+        first_ten_categories = all_categories.json()['tags'][:10]
 
-for category in first_ten_categories:
-    category_name = category["name"]
-    category_name_for_url = category_name.replace(" ", "-")
+        ### URL of categories are the names with "-" in between. Loop to work with one category at a time. ###
 
-    full_url = 'https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_0=contains&tag_0=' \
-               + category_name_for_url + \
-               '&sort_by=unique_scans_n&page_size=' \
-               + str(number_of_products) + \
-               '&json=true'
+        for category in first_ten_categories:
+            category_name = category["name"]
+            category_name_for_url = category_name.replace(" ", "-")
 
-### GET a list of X products from full_url ###
+            full_url = f"https://fr.openfoodfacts.org/cgi/search.pl" \
+                f"?action=process&tagtype_0=categories&tag_contains_0=contains&tag_0={category_name_for_url}" \
+                f"&sort_by=unique_scans_n&page_size={number_of_products}&json=true"
 
-    get_x_products = requests.get(full_url)
+        ### GET a list of X products from full_url ###
 
-    list_products = get_x_products.json()["products"]
+            get_x_products = requests.get(full_url)
 
-### Excluding all products with no fr notes, no name, no stores + TBD ###
+            list_products = get_x_products.json()["products"]
 
-    for each_product in list_products:
-        if '-- fr' in each_product['nutrition_score_debug'] and each_product['generic_name'] != "" and each_product['stores_tags']:
+        ### Excluding all products with no fr notes, no name, no stores + TBD ###
 
-            ### Notes are on the form X | -X | XX at the end of the string
+            for each_product in list_products:
+                if '-- fr' in each_product['nutrition_score_debug'] and each_product['generic_name_fr'] != "" and each_product['stores_tags']:
 
-            note_product = each_product['nutrition_score_debug'][len(each_product['nutrition_score_debug']) - 2:]
-            note_product = note_product.strip()
+                    ### Notes are on the form X | -X | XX at the end of the string
 
-            name_product = each_product['generic_name']
+                    note_product = each_product['nutrition_score_debug'][len(each_product['nutrition_score_debug']) - 2:]
+                    note_product = note_product.strip()
 
-            selling_points = each_product['stores_tags']
+                    name_product = each_product['generic_name_fr']
 
-            product_url = each_product['url']
+                    selling_points = each_product['stores_tags']
 
-            print(name_product, 'NOTE ' + note_product, 'URL ' + product_url)
-            # print(selling_points)
-        else:
-            pass
+                    product_url = each_product['url']
+
+                    output_to_json(category_name, name_product, note_product, selling_points, product_url)
+
+                else:
+                    pass
+    else:
+        print('Products already downloaded to a json file')
+        pass
+
+
+def output_to_json(category, name, note, selling_points, url):
+
+    product_data = {
+        'category_name': category,
+        'name_product': name,
+        'note_product': note,
+        'selling points': selling_points,
+        'product_url': url
+    }
+
+    with open(products_json, 'a', encoding='utf-8') as outfile:
+        json.dump(product_data, outfile, ensure_ascii=False, indent=4)
+
+
+if __name__ == "__main__":
+    get_products()
+# creating database()
+# json to database()
+# interactive program beginning()
