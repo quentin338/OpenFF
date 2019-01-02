@@ -1,7 +1,9 @@
 import requests
 import json
 from os import listdir
+
 from constants import products_json, number_of_products
+from creating_database import creating_database, creating_tables
 
 
 def get_products():
@@ -49,6 +51,9 @@ def get_products():
 
                 else:
                     pass
+
+        print("All products outputted")
+
     else:
         print('Products already downloaded to a json file')
         pass
@@ -71,5 +76,7 @@ def output_to_json(category, name, note, selling_points, url):
 if __name__ == "__main__":
     get_products()
 # creating database()
+    creating_database()
+    creating_tables()
 # json to database()
 # interactive program beginning()
