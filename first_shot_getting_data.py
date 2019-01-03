@@ -1,10 +1,9 @@
 import requests
 import json
 from os import listdir
-from _collections import defaultdict
 
 from constants import products_json, number_of_products
-# from creating_database import creating_database, creating_tables
+from creating_database import creating_database, creating_tables, inserting_products
 
 
 def get_products():
@@ -79,7 +78,8 @@ def output_to_json(dict_to_dump):
 if __name__ == "__main__":
     get_products()
 # creating database()
-#     creating_database()
-#     creating_tables()
+    creating_database()
+    creating_tables()
 # json to database()
+    inserting_products()
 # interactive program beginning()

@@ -31,3 +31,5 @@ TABLES['History'] = (
     "  CONSTRAINT `fk_history_id_new_product` FOREIGN KEY (`id_new_product`) "
     "     REFERENCES `Products` (`id`) "
     ") ENGINE=InnoDB")
+
+add_product_category = "INSERT INTO categories (category_name) VALUES (%s)"
