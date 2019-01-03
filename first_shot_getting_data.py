@@ -14,6 +14,8 @@ def get_products():
 
         ### Connecting to OpenFF and getting the first 10 categories ###
 
+        print("Getting products from OpenFoodFacts API...")
+
         all_categories = requests.get('https://fr.openfoodfacts.org/categories?json=true')
         first_ten_categories = all_categories.json()['tags'][:10]
 
@@ -60,12 +62,13 @@ def get_products():
                     pass
 
         try:
+            print('Outputting products to json...')
             output_to_json(products_data)
-            print("All products outputted")
+            print("All products outputted !")
         except NameError:
             pass
     else:
-        print('Products already downloaded to a json file')
+        print('Products already downloaded to a json file !!')
         pass
 
 

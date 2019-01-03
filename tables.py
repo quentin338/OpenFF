@@ -11,9 +11,10 @@ TABLES['Products'] = (
     "CREATE TABLE IF NOT EXISTS `products` ("
     "  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,"
     "  `category_product` int(2) unsigned NOT NULL,"
-    "  `name_product` varchar(100) NOT NULL,"
+    "  `name_product` varchar(200) NOT NULL,"
     "  `note_product` int(2) NOT NULL,"
-    "  `shops` varchar(20) NOT NULL,"
+    "  `shops` varchar(50) NOT NULL,"
+    "  `url` varchar(150) NOT NULL,"
     "  PRIMARY KEY (`id`),"
     "  CONSTRAINT `fk_category_name` FOREIGN KEY (`category_product`) "
     "     REFERENCES `Categories` (`id`) "
@@ -33,3 +34,5 @@ TABLES['History'] = (
     ") ENGINE=InnoDB")
 
 add_product_category = "INSERT INTO categories (category_name) VALUES (%s)"
+add_product = "INSERT INTO products (category_product, name_product, note_product, shops, url) SELECT id, %s, %s, %s, %s \
+               FROM categories where category_name = %s"

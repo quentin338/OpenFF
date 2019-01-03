@@ -59,19 +59,26 @@ def inserting_products():
     with open(products_json, 'r', encoding='utf-8') as infile:
         data = json.load(infile)
         category_list = set()
+        product_list = []
 
         for product in data['products']:
             category_name, name, note, selling, url = product.values()
 
             category_list.add((category_name,))
 
+            for each_shop in selling:
+                if "β" not in each_shop:
+                    product_list.append((name, note, each_shop, url, category_name))
+                else:
+                    pass
+
         try:
-            print('trying')
-            print(category_list)
             mycursor.executemany(add_product_category, category_list)
-            print('done')
+            print('Adding products to database...')
+            mycursor.executemany(add_product, product_list)
+            print('Products added !')
             mydb.commit()
-        except:
+        except ValueError:
             pass
 
     mycursor.close()
