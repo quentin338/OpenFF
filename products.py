@@ -23,7 +23,3 @@ class Product:
             for product in data['products']:
                 product_object = Product(product['category_name'], product['name_product'], product['note_product'], product['selling points'], product['product_url'])
                 cls.list_products.append(product_object)
-
-
-Product.spawning_products()
-print(Product.list_products[-5].note)

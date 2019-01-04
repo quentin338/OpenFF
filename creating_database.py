@@ -75,6 +75,7 @@ def inserting_products():
         try:
             mycursor.executemany(add_product_category, category_list)
             print('Adding products to database...')
+            print(product_list)
             mycursor.executemany(add_product, product_list)
             print('Products added !')
             mydb.commit()
@@ -85,4 +86,4 @@ def inserting_products():
     mydb.close()
 
 
-# inserting_products()
+inserting_products()

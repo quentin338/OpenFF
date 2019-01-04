@@ -1,9 +1,9 @@
 import mysql.connector
-import json
 
-from constants import host, dbname, products_json
+from constants import host, dbname
 from userpassdb import username, userpass
 from tables import *
+# from products import Product
 
 
 class Dbmanager:
@@ -37,34 +37,31 @@ class Dbmanager:
             with self as c:
                 c.execute(table_description)
 
-    def inserting_products(self):
-        with open(products_json, 'r', encoding='utf-8') as infile:
-            data = json.load(infile)
-            category_list = set()
-            product_list = []
+    def inserting_products(self, products_list):
 
-            for product in data['products']:
-                category_name, name, note, selling, url = product.values()
+        category_list = set()
+        product_detail = []
 
-                category_list.add((category_name,))
+        for product in products_list:
+            category_list.add((product.category,))
 
-                for each_shop in selling:
-                    if "β" not in each_shop:
-                        product_list.append((name, note, each_shop, url, category_name))
-                    else:
-                        pass
+            for each_shop in product.shop:
+                if "β" not in each_shop:
+                    product_detail.append((product.name, product.note, each_shop, product.url, product.category))
 
-            with self as c:
-                try:
-                    c.executemany(add_product_category, category_list)
-                    print('Adding products to database...')
-                    c.executemany(add_product, product_list)
-                    print('Products added !')
-                except ValueError:
-                    pass
+        with self as c:
+            try:
+                c.executemany(add_product_category, category_list)
+                print('Adding products to database...')
+                c.executemany(add_product, product_detail)
+                print('Products added !')
+            except ValueError:
+                pass
 
 
-db = Dbmanager()
-db.creating_database()
-db.creating_tables()
-db.inserting_products()
+# Product.spawning_products()
+#
+# db = Dbmanager()
+# db.creating_database()
+# db.creating_tables()
+# db.inserting_products(Product.list_products)
