@@ -67,7 +67,7 @@ def inserting_products():
             category_list.add((category_name,))
 
             for each_shop in selling:
-                if "β" not in each_shop:
+                if "β" not in each_shop:   # Some Greek shop translated to ??? in SQL
                     product_list.append((name, note, each_shop, url, category_name))
                 else:
                     pass
