@@ -9,7 +9,7 @@ from constants import products_json, number_of_products, number_of_categories
 class APIManager:
 
     products_data = {"products": []}
-    number_of_categories_done = 0
+    categories_counter = 0
 
     def __init__(self):
         pass
@@ -36,7 +36,7 @@ class APIManager:
 
                 list_products = all_products.json()["products"]
 
-                cls.number_of_categories_done += 1
+                cls.categories_counter += 1
 
                 cls.get_products(list_products, category_name)
 
@@ -47,12 +47,9 @@ class APIManager:
     @classmethod
     def get_products(cls, list_products, category_name):
 
-
-
-    ### Excluding all products with no fr notes, no name, no stores + TBD ###
-
         for each_product in list_products:
-            if '-- fr' in each_product['nutrition_score_debug'] and each_product['generic_name_fr'] != "" and each_product['stores_tags']:
+            if '-- fr' in each_product['nutrition_score_debug'] and each_product['generic_name_fr'] != "" \
+                    and each_product['stores_tags']:
 
                 ### Notes are on the form X | -X | XX at the end of the string
 
@@ -60,9 +57,7 @@ class APIManager:
                 note_product = note_product.strip()
 
                 name_product = each_product['generic_name_fr']
-
                 selling_points = each_product['stores_tags']
-
                 product_url = each_product['url']
 
                 cls.products_data['products'].append({
@@ -71,12 +66,11 @@ class APIManager:
                          'note_product': note_product,
                          'selling points': selling_points,
                          'product_url': product_url})
-
             else:
                 pass
 
         try:
-            if cls.number_of_categories_done == number_of_categories:
+            if cls.categories_counter == number_of_categories:
                 print('Outputting products to json...')
                 cls.output_to_json(cls.products_data)
                 print("All products outputted !")
