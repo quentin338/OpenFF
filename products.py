@@ -26,4 +26,4 @@ class Product:
 
 
 Product.spawning_products()
-print(Product.list_products[0].shop)
+print(Product.list_products[-5].note)

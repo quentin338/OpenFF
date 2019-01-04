@@ -1,9 +1,7 @@
 import requests
 import json
-from os import listdir
 
 from constants import products_json, number_of_products, number_of_categories
-# from creating_database import creating_database, creating_tables, inserting_products
 
 
 class APIManager:
@@ -62,19 +60,3 @@ class APIManager:
             json.dump(dict_to_dump, outfile, ensure_ascii=False, indent=4)
 
             print(f"{len(self.products_data['products'])} products outputted in {products_json} !")
-
-
-if __name__ == "__main__":
-    if products_json not in listdir():
-        API = APIManager()
-        API.get_categories()
-        API.output_to_json(API.products_data)
-    else:
-        print("Products already downloaded !")
-
-# creating database()
-#     creating_database()
-#     creating_tables()
-# json to database()
-#     inserting_products()
-# interactive program beginning()
