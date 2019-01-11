@@ -3,7 +3,7 @@ import mysql.connector
 from constants import host, dbname
 from userpassdb import username, userpass
 from tables import *
-# from products import Product
+from products import Product
 
 
 class Dbmanager:
@@ -22,8 +22,11 @@ class Dbmanager:
         return self.connect.cursor()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.connect.commit()
-        print("exit")
+        try:
+            self.connect.commit()
+            print("exit")
+        except mysql.connector.errors.InternalError:
+            print("Nothing to commit")
 
     def creating_database(self):
         with self as c:
@@ -38,7 +41,6 @@ class Dbmanager:
                 c.execute(table_description)
 
     def inserting_products(self, products_list):
-
         category_list = set()
         product_detail = []
 
@@ -50,18 +52,43 @@ class Dbmanager:
                     product_detail.append((product.name, product.note, each_shop, product.url, product.category))
 
         with self as c:
-            try:
-                c.executemany(add_product_category, category_list)
-                print('Adding products to database...')
-                c.executemany(add_product, product_detail)
-                print('Products added !')
-            except ValueError:
-                pass
+            c.execute("SELECT COUNT(*) FROM products")
+            products_in_db = c.fetchone()
+            products_in_db = products_in_db[0]
+
+            if products_in_db == 0:
+                try:
+                    c.executemany(add_product_category, category_list)
+                    print('Adding products to database...')
+                    c.executemany(add_product, product_detail)
+                    print('Products added !')
+                except ValueError:
+                    pass
+            else:
+                print("Products already in the database !")
+
+    def finding_best_product(self):
+        with self as c:
+            c.execute(all_categories)
+
+            category_list = c.fetchall()
+
+            print(f"Liste des catégories :")
+
+            for category in category_list:
+                number, cat = category
+                print(number, cat)
+
+            user_input = input(f"Veuillez choisir votre catégorie : ")
+
+            c.execute(best_product_in_category, (user_input,))
+            best_product = Product(*c.fetchone())
+
+            print(f"Le produit le plus sain de la catégorie {best_product.category} est : {best_product.name}")
+            print(f"Ce produit a une note de {best_product.note} et est disponible dans le(s) magasins {best_product.shop}.")
+            print(f"Plus d'informations disponibles sur le produit ici : {best_product.url}")
+
+            return best_product
 
 
-# Product.spawning_products()
-#
 # db = Dbmanager()
-# db.creating_database()
-# db.creating_tables()
-# db.inserting_products(Product.list_products)

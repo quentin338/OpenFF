@@ -21,15 +21,8 @@ def main():
     db.creating_database()
     db.creating_tables()
     db.inserting_products(Product.list_products)
+    db.finding_best_product()
 
 
 if __name__ == "__main__":
     main()
-
-
-
-    # creating_database()
-    # creating_tables()
-    # json to database()
-    # inserting_products()
-    # interactive program beginning()

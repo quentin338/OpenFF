@@ -47,8 +47,8 @@ class APIManager:
 
                 self.products_data['products'].append({
                          'category_name': category_name,
-                         'name_product': name_product,
-                         'note_product': note_product,
+                         'product_name': name_product,
+                         'note': note_product,
                          'selling points': selling_points,
                          'product_url': product_url})
             else:

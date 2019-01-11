@@ -21,5 +21,5 @@ class Product:
             data = json.load(infile)
 
             for product in data['products']:
-                product_object = Product(product['category_name'], product['name_product'], product['note_product'], product['selling points'], product['product_url'])
+                product_object = Product(product['category_name'], product['product_name'], product['note'], product['selling points'], product['product_url'])
                 cls.list_products.append(product_object)
