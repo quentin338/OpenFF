@@ -63,7 +63,7 @@ class Dbmanager:
 
             self.session.commit()
         else:
-            print("Products already inserted")
+            print("Products already inserted !")
 
     def asking_categories(self):
         all_categories = self.session.query(Categories).all()

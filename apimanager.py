@@ -33,7 +33,7 @@ class APIManager:
     def get_products(self, list_products, category_name):
 
         for each_product in list_products:
-            if '-- fr' in each_product['nutrition_score_debug'] and each_product['generic_name_fr'] != "" \
+            if '-- fr' in each_product['nutrition_score_debug'] and each_product['product_name_fr'] != "" \
                     and each_product['stores_tags']:
 
                 ### Notes are on the form X | -X | XX at the end of the string
@@ -41,7 +41,7 @@ class APIManager:
                 note_product = each_product['nutrition_score_debug'][len(each_product['nutrition_score_debug']) - 2:]
                 note_product = note_product.strip()
 
-                name_product = each_product['generic_name_fr']
+                name_product = each_product['product_name_fr']
                 selling_points = each_product['stores_tags']
                 product_url = each_product['url']
 
