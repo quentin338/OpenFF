@@ -2,8 +2,7 @@ from os import listdir
 
 from constants import products_json
 from apimanager import APIManager
-from products import Product
-from dbmanager import Dbmanager
+from dbmanager_alch import Dbmanager
 
 
 def main():
@@ -15,13 +14,11 @@ def main():
     else:
         print("Products already downloaded !")
 
-    Product.spawning_products()
+    cnx = Dbmanager.creating_table()
 
-    db = Dbmanager()
-    db.creating_database()
-    db.creating_tables()
-    db.inserting_products(Product.list_products)
-    db.finding_best_product()
+    cnx.inserting_categories()
+    cnx.inserting_products()
+    cnx.asking_categories()
 
 
 if __name__ == "__main__":
