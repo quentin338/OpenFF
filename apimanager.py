@@ -1,7 +1,7 @@
 import requests
 import json
 
-from constants import products_json, number_of_products, number_of_categories
+from CONSTANTS import products_json, number_of_products, number_of_categories
 
 
 class APIManager:

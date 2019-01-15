@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import json
-from constants import products_json, username, host, dbname, number_of_categories, Base
+from CONSTANTS import products_json, username, host, dbname, number_of_categories, Base
 from userpassdb import userpass
 
 
@@ -81,10 +81,10 @@ class Dbmanager:
                 category_name = category_name.name
                 self._best_product(user_input, category_name)
             else:
-                print(f"Veuillez choisir un nombre entre 1 et {number_of_categories}.")
+                print(f"Entrée invalide. Veuillez choisir un nombre entre 1 et {number_of_categories}.")
                 self.asking_categories()
         except ValueError:
-            print(f"Veuillez choisir un nombre entre 1 et {number_of_categories} : ")
+            print(f"Entrée invalide. Veuillez choisir un nombre entre 1 et {number_of_categories} : ")
             self.asking_categories()
 
     def _best_product(self, user_input, category_name):
@@ -98,6 +98,3 @@ class Dbmanager:
         print(f"Le produit le plus sain de la catégorie {category_name} est : {best_product.name}")
         print(f"Ce produit a une note de {best_product.note} et est disponible dans le(s) magasins {product_shops_list}.")
         print(f"Plus d'informations disponibles sur le produit ici : {best_product.url}")
-
-
-# cnx = Dbmanager.creating_table()

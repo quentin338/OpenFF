@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, ForeignKey, Date
 from sqlalchemy.dialects.mysql import INTEGER
 
-from constants import Base
+from CONSTANTS import Base
 
 
 class Categories(Base):

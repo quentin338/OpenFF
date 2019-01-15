@@ -1,25 +1,29 @@
 from os import listdir
 
-from constants import products_json
+from CONSTANTS import products_json
 from apimanager import APIManager
 from dbmanager_alch import Dbmanager
 
 
-def main():
+class Main:
+    def __init__(self):
+        if products_json not in listdir():
+            api = APIManager()
+            api.get_categories()
+            api.output_to_json(api.products_data)
+        else:
+            print("Products already downloaded !")
 
-    if products_json not in listdir():
-        api = APIManager()
-        api.get_categories()
-        api.output_to_json(api.products_data)
-    else:
-        print("Products already downloaded !")
+        self.initdb()
 
-    cnx = Dbmanager.creating_table()
-
-    cnx.inserting_categories()
-    cnx.inserting_products()
-    cnx.asking_categories()
+    def initdb(self):
+        db = Dbmanager.creating_table()
+        db.inserting_categories()
+        db.inserting_products()
+        db.asking_categories()
 
 
 if __name__ == "__main__":
-    main()
+
+    db = Main()
+
