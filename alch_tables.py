@@ -42,3 +42,8 @@ class History(Base):
     id_new_product = Column('id_new_product', INTEGER(display_width=5, unsigned=True),
                             ForeignKey(Products.id), nullable=False)
     date = Column('date', Date, nullable=False)
+
+    def __init__(self, id_initial_product, id_new_product, date):
+        self.id_initial_product = id_initial_product
+        self.id_new_product = id_new_product
+        self.date = date

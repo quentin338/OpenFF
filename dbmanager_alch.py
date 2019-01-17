@@ -43,7 +43,7 @@ class Dbmanager:
             self.session.commit()
 
         else:
-            print('Categories already inserted !')
+            print('Categories already inserted ! ', end="")
 
     def inserting_products(self):
         if len(self.session.query(Products).all()) == 0:
@@ -68,12 +68,12 @@ class Dbmanager:
     def asking_categories(self):
         all_categories = self.session.query(Categories).all()
 
-        print("Liste des catégories :")
+        print("\nListe des catégories :\n")
 
         for category in all_categories:
-            print(category.id, category.name)
+            print(f"\t {category.id}  {category.name}")
 
-        user_input = input(f"Veuillez choisir votre catégorie : ")
+        user_input = input(f"\nVeuillez choisir votre catégorie : ")
 
         try:
             if int(user_input) in range(1, number_of_categories + 1):
@@ -95,6 +95,30 @@ class Dbmanager:
         product_shops_list = set([product.shop for product in product_shops])
         product_shops_list = ", ".join(product_shops_list)
 
-        print(f"Le produit le plus sain de la catégorie {category_name} est : {best_product.name}")
-        print(f"Ce produit a une note de {best_product.note} et est disponible dans le(s) magasins {product_shops_list}.")
-        print(f"Plus d'informations disponibles sur le produit ici : {best_product.url}")
+        print(f"\n\tLe produit le plus sain de la catégorie {category_name} est : {best_product.name}")
+        print(f"\tCe produit a une note de {best_product.note} et est disponible dans le(s) magasin(s) {product_shops_list}.")
+        print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
+
+        print(f"Voulez-vous :")
+        print("\t 1 Enregistrer ce résultat.")
+        print("\t 2 Rechercher un nouveau produit.")
+        print("\t 3 Quitter le programme.\n")
+
+        inp = input("Votre choix : ")
+
+        if inp == "1":
+            self.saving_history(best_product, best_product)
+        elif inp == "2":
+            self.asking_categories()
+        else:
+            print("\nMerci d'avoir utilisé notre programme ! L'équipe PurBeurre.")
+            pass
+
+    def saving_history(self, initial_product, best_product):
+        self.session.add(History(id_initial_product=initial_product.id, id_new_product=best_product.id, date="2020-12-18"))
+        self.session.commit()
+
+        print("Saved")
+
+        self.asking_categories()
+

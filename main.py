@@ -12,7 +12,7 @@ class Main:
             api.get_categories()
             api.output_to_json(api.products_data)
         else:
-            print("Products already downloaded !")
+            print("Products already downloaded ! ", end="")
 
         self.initdb()
 
