@@ -11,7 +11,7 @@ class APIManager:
 
     def get_categories(self):
 
-        print("Getting products from OpenFoodFacts API...")
+        print("Téléchargement des produits sur Openfoodfacts.org...", end="")
 
         all_categories_list = requests.get('https://fr.openfoodfacts.org/categories?json=true')
         categories = all_categories_list.json()['tags'][:number_of_categories]
@@ -27,6 +27,8 @@ class APIManager:
             all_products = requests.get(full_url)
 
             list_products = all_products.json()["products"]
+
+            print(".", end="")
 
             self.get_products(list_products, category_name)
 
@@ -59,4 +61,4 @@ class APIManager:
         with open(products_json, 'a', encoding='utf-8') as outfile:
             json.dump(dict_to_dump, outfile, ensure_ascii=False, indent=4)
 
-            print(f"{len(self.products_data['products'])} products outputted in {products_json} !")
+            print(f"\n{len(self.products_data['products'])} produits exportés vers {products_json} !")

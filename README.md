@@ -6,32 +6,24 @@ Project 5 OC - OpenFoodFacts
 ## This program will
 
 - *Connect to OpFF API (site)*
-- *Retrieve the data needed (which one ?)*
+- *Retrieve the data needed (Categories -> Products name/note/shops/url*
 - *Creating a local database (if not exists)*
-- *Copying the data retrieved to the DB (MySQL commands from python)*
+- *Copying the data retrieved to the DB*
 - *Asking user inputs*
-- *Registering some results in DB*
+- *Finding best product in categories*
+- *Registering results in history table*
 
-***
 
 ## Modules needed
 
 - *requests*
 - *mysql-connector*
+- *mysql-alchemy*
 
-***
 
 ## TODO
 
-- *Finishing MySQL course*
-- *Getting more familiar with OpFF API/Site*
-- *Trello*
-- *Relational model for the DB* - **UML**
-- *Learning requests module*
-- *Learning mysql-connector module*
-- *Getting sh**s done*
-
-***
+- *See Trello board*
 
 ## Need to zip and upload at the end
 
@@ -41,8 +33,6 @@ Project 5 OC - OpenFoodFacts
 - *Script to create DB (github ?)*
 - *Relational model - StarUML*
 
-***
-
-### Done
+## Done
 
 - *Trello :* https://trello.com/b/pyN13GCV/openfoodfacts 

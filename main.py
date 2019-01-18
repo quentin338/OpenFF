@@ -12,7 +12,7 @@ class Main:
             api.get_categories()
             api.output_to_json(api.products_data)
         else:
-            print("Products already downloaded ! ", end="")
+            print("Produits déjà téléchargés ! ", end="")
 
         self.initdb()
 
@@ -26,4 +26,3 @@ class Main:
 if __name__ == "__main__":
 
     db = Main()
-

@@ -1,8 +1,9 @@
-from alch_tables import Products, Categories, History
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 import json
+from sqlalchemy import create_engine, desc
+from sqlalchemy.orm import sessionmaker
+from datetime import date
+
+from alch_tables import Products, Categories, History
 from CONSTANTS import products_json, username, host, dbname, number_of_categories, Base
 from userpassdb import userpass
 
@@ -43,7 +44,7 @@ class Dbmanager:
             self.session.commit()
 
         else:
-            print('Categories already inserted ! ', end="")
+            print('Catégories déjà créées ! ', end="")
 
     def inserting_products(self):
         if len(self.session.query(Products).all()) == 0:
@@ -63,7 +64,7 @@ class Dbmanager:
 
             self.session.commit()
         else:
-            print("Products already inserted !")
+            print("Produits déjà insérés !")
 
     def asking_categories(self):
         all_categories = self.session.query(Categories).all()
@@ -77,9 +78,7 @@ class Dbmanager:
 
         try:
             if int(user_input) in range(1, number_of_categories + 1):
-                category_name = self.session.query(Categories).filter(Products.category == user_input).first()
-                category_name = category_name.name
-                self._best_product(user_input, category_name)
+                self._products_in_category(user_input)
             else:
                 print(f"Entrée invalide. Veuillez choisir un nombre entre 1 et {number_of_categories}.")
                 self.asking_categories()
@@ -87,38 +86,89 @@ class Dbmanager:
             print(f"Entrée invalide. Veuillez choisir un nombre entre 1 et {number_of_categories} : ")
             self.asking_categories()
 
-    def _best_product(self, user_input, category_name):
-        best_product = self.session.query(Products).filter(Products.category == user_input)\
-                                                        .order_by(Products.note).first()
+    def _products_in_category(self, category_id):
+        distinct_names = self.session.query(Products.name.distinct()).filter(Products.category == category_id)\
+                                               .order_by(desc(Products.note)).distinct(Products.name).limit(10)
+
+        products_name = []
+        for row in distinct_names:
+            products_name.append(*row)
+
+        print(f"\nChoisissez l'aliment que vous voulez remplacer : \n")
+
+        for i, name in enumerate(products_name):
+            print(f'{i + 1}  {name}')
+
+        inp = input("\nVotre choix : ")
+
+        try:
+            if int(inp) in range(1, len(products_name) + 1):
+                self._best_product(category_id, products_name[int(inp) - 1])
+            else:
+                print(f"Entrée invalide. Choisissez un nombre entre 1 et {len(products_name)}")
+                self._products_in_category(category_id)
+        except ValueError:
+            print(f"Entrée invalide. Choisissez un nombre entre 1 et {len(products_name)}")
+            self._products_in_category(category_id)
+
+    def _best_product(self, category_id, initial_product_name):
+        initial_product = self.session.query(Products).filter(Products.name == initial_product_name).first()
+
+        best_product = self.session.query(Products).filter(Products.category == category_id) \
+            .order_by(Products.note).first()
 
         product_shops = self.session.query(Products).filter(Products.name == best_product.name)
         product_shops_list = set([product.shop for product in product_shops])
         product_shops_list = ", ".join(product_shops_list)
 
-        print(f"\n\tLe produit le plus sain de la catégorie {category_name} est : {best_product.name}")
-        print(f"\tCe produit a une note de {best_product.note} et est disponible dans le(s) magasin(s) {product_shops_list}.")
-        print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
+        if initial_product.name != best_product.name:
+            print(f"\n\tVous pouvez remplacer l'aliment '{initial_product.name}' par : '{best_product.name}'")
+            print(f"\tCe produit a une note de {best_product.note} et est disponible dans le(s) magasin(s) {product_shops_list}.")
+            print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
-        print(f"Voulez-vous :")
-        print("\t 1 Enregistrer ce résultat.")
-        print("\t 2 Rechercher un nouveau produit.")
+            self._registering_product(initial_product, best_product)
+        else:
+            print(f'\nLe produit "{best_product.name}" est déjà le plus sain de sa catégorie.')
+            print(f'Il a une note de {best_product.note} et est disponible dans le(s) magasin(s) {product_shops_list}')
+            print(f"Plus d'informations disponibles sur le produit ici : {best_product.url}\n")
+
+            self._menu()
+
+    def _registering_product(self, initial_product, best_product):
+        # TODO Make sure that the user can't register the same research twice
+
+            inp = input(f"Voulez-vous enregistrer cette recherche ? 1 pour OUI, 2 pour NON : ")
+            if inp == "1":
+                self.session.add(History(id_initial_product=initial_product.id, id_new_product=best_product.id,
+                                         date=date.today()))
+                self.session.commit()
+                print("\nLe résultat a été enregistré.")
+                self._menu()
+            elif inp == "2":
+                self._menu()
+            else:
+                print("Entrée invalide.")
+                self._registering_product(initial_product, best_product)
+
+    def _menu(self):
+        print("\n\t 1 Rechercher un nouveau produit.")
+        print("\t 2 Voir vos aliments enregistrés.")
         print("\t 3 Quitter le programme.\n")
 
         inp = input("Votre choix : ")
 
         if inp == "1":
-            self.saving_history(best_product, best_product)
-        elif inp == "2":
             self.asking_categories()
-        else:
-            print("\nMerci d'avoir utilisé notre programme ! L'équipe PurBeurre.")
+        elif inp == "2":
+            self.show_historic()
+        elif inp == "3":
+            print("\nMerci d'avoir utilisé notre programme ! L'équipe Pur Beurre.")
             pass
+        else:
+            print("Entrée invalide, veuillez recommencer.")
+            self._menu()
 
-    def saving_history(self, initial_product, best_product):
-        self.session.add(History(id_initial_product=initial_product.id, id_new_product=best_product.id, date="2020-12-18"))
-        self.session.commit()
-
-        print("Saved")
-
-        self.asking_categories()
+    def show_historic(self):
+        # TODO
+        pass
 
