@@ -20,7 +20,7 @@ class Main:
         db = Dbmanager.creating_table()
         db.inserting_categories()
         db.inserting_products()
-        db.asking_categories()
+        db.menu(first_start=True)
 
 
 if __name__ == "__main__":

@@ -13,13 +13,11 @@ Project 5 OC - OpenFoodFacts
 - *Finding best product in categories*
 - *Registering results in history table*
 
-
 ## Modules needed
 
 - *requests*
 - *mysql-connector*
 - *mysql-alchemy*
-
 
 ## TODO
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, ForeignKey, Date
+from sqlalchemy import Column, String, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.dialects.mysql import INTEGER
 
 from CONSTANTS import Base
@@ -41,7 +41,9 @@ class History(Base):
                                 ForeignKey(Products.id), nullable=False)
     id_new_product = Column('id_new_product', INTEGER(display_width=5, unsigned=True),
                             ForeignKey(Products.id), nullable=False)
-    date = Column('date', Date, nullable=False)
+    date = Column('date', DateTime, nullable=False)
+
+    __table_args__ = (UniqueConstraint('id_initial_product', 'id_new_product', name='uc_saved_search'),)
 
     def __init__(self, id_initial_product, id_new_product, date):
         self.id_initial_product = id_initial_product

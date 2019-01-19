@@ -1,10 +1,11 @@
 import json
+from datetime import datetime
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
-from datetime import date
+from sqlalchemy.exc import IntegrityError
 
 from alch_tables import Products, Categories, History
-from CONSTANTS import products_json, username, host, dbname, number_of_categories, Base
+from CONSTANTS import products_json, username, host, dbname, number_of_categories, Base, menu_list
 from userpassdb import userpass
 
 
@@ -29,6 +30,7 @@ class Dbmanager:
 
     def inserting_categories(self):
         if len(self.session.query(Categories).all()) == 0:
+            print('Création des catégories. ', end="")
 
             with open(products_json, 'r', encoding='utf-8') as infile:
                 data = json.load(infile)
@@ -48,6 +50,7 @@ class Dbmanager:
 
     def inserting_products(self):
         if len(self.session.query(Products).all()) == 0:
+            print('Insertion des produits.')
 
             with open(products_json, 'r', encoding='utf-8') as infile:
                 data = json.load(infile)
@@ -88,7 +91,7 @@ class Dbmanager:
 
     def _products_in_category(self, category_id):
         distinct_names = self.session.query(Products.name.distinct()).filter(Products.category == category_id)\
-                                               .order_by(desc(Products.note)).distinct(Products.name).limit(10)
+                                               .order_by(desc(Products.note)).limit(10)
 
         products_name = []
         for row in distinct_names:
@@ -97,7 +100,7 @@ class Dbmanager:
         print(f"\nChoisissez l'aliment que vous voulez remplacer : \n")
 
         for i, name in enumerate(products_name):
-            print(f'{i + 1}  {name}')
+            print(f'\t{i + 1}  {name}')
 
         inp = input("\nVotre choix : ")
 
@@ -128,47 +131,79 @@ class Dbmanager:
 
             self._registering_product(initial_product, best_product)
         else:
-            print(f'\nLe produit "{best_product.name}" est déjà le plus sain de sa catégorie.')
+            print(f"\nLe produit '{best_product.name}' est déjà le plus sain de sa catégorie.")
             print(f'Il a une note de {best_product.note} et est disponible dans le(s) magasin(s) {product_shops_list}')
             print(f"Plus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
-            self._menu()
+            self.menu()
 
     def _registering_product(self, initial_product, best_product):
-        # TODO Make sure that the user can't register the same research twice
-
             inp = input(f"Voulez-vous enregistrer cette recherche ? 1 pour OUI, 2 pour NON : ")
-            if inp == "1":
-                self.session.add(History(id_initial_product=initial_product.id, id_new_product=best_product.id,
-                                         date=date.today()))
-                self.session.commit()
-                print("\nLe résultat a été enregistré.")
-                self._menu()
-            elif inp == "2":
-                self._menu()
-            else:
-                print("Entrée invalide.")
-                self._registering_product(initial_product, best_product)
 
-    def _menu(self):
-        print("\n\t 1 Rechercher un nouveau produit.")
-        print("\t 2 Voir vos aliments enregistrés.")
-        print("\t 3 Quitter le programme.\n")
+            try:
+                if inp == "1":
+                    self.session.add(History(id_initial_product=initial_product.id, id_new_product=best_product.id,
+                                             date=datetime.now()))
+                    self.session.commit()
+                    print("\nLe résultat a été enregistré.")
+                    self.menu()
+                elif inp == "2":
+                    self.menu()
+                else:
+                    print("Entrée invalide.")
+                    self._registering_product(initial_product, best_product)
+            except IntegrityError:
+                print("\nCette recherche a déjà été enregistrée. Retrouvez-la en tapant 2 dans le menu.")
+                self.session.rollback()
+                self.menu()
+
+    def menu(self, first_start=False):
+        if first_start:
+            print("\nBienvenue dans l'application Pur Beurre, où vous pourrez substituer des aliments "
+                  "plus sains à vos envies !!")
+
+        print("\n\t 1 Substituer un nouvel aliment.")
+        if len(self.session.query(History).all()) != 0:
+            print("\t 2 Voir vos recherches enregistrées.")
+            print("\t E Effacer les recherches.")
+        print("\t Q Quitter le programme.\n")
 
         inp = input("Votre choix : ")
 
-        if inp == "1":
-            self.asking_categories()
-        elif inp == "2":
-            self.show_historic()
-        elif inp == "3":
-            print("\nMerci d'avoir utilisé notre programme ! L'équipe Pur Beurre.")
-            pass
+        if inp in menu_list:
+            if inp == "1":
+                self.asking_categories()
+            elif inp.lower() == "q":
+                print("\nMerci d'avoir utilisé notre programme ! L'équipe Pur Beurre.")
+                pass
+            elif len(self.session.query(History).all()) != 0:
+                if inp.lower() == "e":
+                    self._delete_history()
+                    self.menu()
+                elif inp == "2":
+                    self.show_history()
+            else:
+                print("Entrée invalide, veuillez recommencer.")
+                self.menu()
         else:
             print("Entrée invalide, veuillez recommencer.")
-            self._menu()
+            self.menu()
 
-    def show_historic(self):
-        # TODO
-        pass
+    def show_history(self):
+        history_list = self.session.query(History).order_by(desc(History.date)).all()
 
+        for row in history_list:
+            initial_product = self.session.query(Products).filter(Products.id == row.id_initial_product).first()
+            new_product = self.session.query(Products).filter(Products.id == row.id_new_product).first()
+
+            print(f"\n\tNous vous proposons de remplacer le produit '{initial_product.name}' par '{new_product.name}'.")
+            print(f"\tPlus d'informations disponibles sur ce produit ici : {new_product.url}")
+            print("\t****")
+
+        self.menu()
+
+    def _delete_history(self):
+        print("\nVos recherches enregistrées ont été effacées !")
+
+        self.session.query(History).delete()
+        self.session.commit()
