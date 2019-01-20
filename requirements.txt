@@ -2,3 +2,4 @@ requests == 2.21.0
 mysql-connector == 2.1.6
 mysql-connector-python == 8.0.13
 SQLAlchemy == 1.2.16
+colorama == 0.4.1
