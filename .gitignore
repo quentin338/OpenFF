@@ -1,8 +1,6 @@
 /venv
 /.idea
 /.git
-__pycache__/
-data/
-products_output.json
-MPD.mdj
 /src/config.py
+/data
+__pycache__
