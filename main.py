@@ -1,4 +1,4 @@
-from os import listdir
+from os import listdir, mkdir
 
 from src.CONSTANTS import PRODUCTS_JSON, PRODUCTS_JSON_DIR, GREEN
 from src.apimanager import APIManager
@@ -7,6 +7,11 @@ from src.dbmanager_alch import Dbmanager, ansi, init
 
 class Main:
     def __init__(self):
+        try:
+            mkdir(PRODUCTS_JSON_DIR)
+            print(f'Creating "{PRODUCTS_JSON_DIR}" directory...')
+        except FileExistsError:
+            pass
         if PRODUCTS_JSON not in listdir(PRODUCTS_JSON_DIR):
             api = APIManager()
             api.get_categories()
