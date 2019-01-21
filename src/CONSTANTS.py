@@ -1,0 +1,16 @@
+from colorama import Fore, Style
+
+NUMBER_OF_CATEGORIES = 10
+NUMBER_OF_PRODUCTS = 30
+PRODUCTS_JSON = 'products_output.json'
+PRODUCTS_JSON_DIR = 'data/'
+MENU_LIST = ["1", "2", "e", "q", "E", "Q"]
+
+# CONSOLE COLORS
+
+RED = Fore.RED + Style.NORMAL
+GREEN = Fore.GREEN + Style.NORMAL
+RESET_COLOR = Style.RESET_ALL
+LIGHT_YELLOW = Fore.LIGHTYELLOW_EX + Style.NORMAL
+LIGHT_BLUE = Fore.LIGHTBLUE_EX + Style.NORMAL
+LIGHT_GREEN = Fore.LIGHTGREEN_EX + Style.NORMAL
