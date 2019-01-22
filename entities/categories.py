@@ -5,6 +5,9 @@ from src.config import Base
 
 
 class Categories(Base):
+    """
+    Category table
+    """
 
     __tablename__ = "categories"
 

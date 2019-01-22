@@ -1,5 +1,7 @@
 from colorama import Fore, Style
 
+# NUMBERS DOWNLOADED FROM OPENFOODFACTS API and FILE OUTPUT
+
 NUMBER_OF_CATEGORIES = 10
 NUMBER_OF_PRODUCTS = 30
 PRODUCTS_JSON = 'products_output.json'

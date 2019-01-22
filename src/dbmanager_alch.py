@@ -13,6 +13,11 @@ from src.config import host, username, userpass, dbname, Base
 
 
 class Dbmanager:
+    """
+    Opens a connection to the SQL server via sql-alchemy
+    Initiates DB, tables and filling it
+    Runs user program
+    """
 
     def __init__(self, session):
         self.session = session
@@ -20,6 +25,11 @@ class Dbmanager:
 
     @classmethod
     def creating_table(cls):
+        """
+        Creating DB, connects to it and creates SQL tables
+        :return: instance of Dbmanager
+        """
+
         engine = create_engine(f'mysql+mysqlconnector://{username}:{userpass}@{host}', echo=False)
 
         engine.execute(f'CREATE DATABASE IF NOT EXISTS {dbname}')
@@ -32,6 +42,10 @@ class Dbmanager:
         return Dbmanager(session)
 
     def inserting_categories(self):
+        """
+        Inserts categories into table Category via downloaded JSON
+        """
+
         if len(self.session.query(Categories).all()) == 0:
             print(f'{CONSTANTS.GREEN}Création des catégories. ', end="")
 
@@ -52,6 +66,10 @@ class Dbmanager:
             print(f'{CONSTANTS.GREEN}Catégories déjà créées ! ', end="")
 
     def inserting_products(self):
+        """
+        Inserting products into Product table via downloaded JSON
+        """
+
         if len(self.session.query(Products).all()) == 0:
             print(f'{CONSTANTS.GREEN}Insertion des produits.')
 
@@ -73,6 +91,10 @@ class Dbmanager:
             print(f"{CONSTANTS.GREEN}Produits déjà insérés !")
 
     def asking_categories(self):
+        """
+        User program : listing categories from Category table and asking for a choice
+        """
+
         all_categories = self.session.query(Categories).all()
 
         print(ansi.clear_screen())
@@ -95,6 +117,11 @@ class Dbmanager:
             self.asking_categories()
 
     def _products_in_category(self, category_id):
+        """
+        User program :  listing 10 products from the chosen category and asking for a choice
+        :param category_id:  user input between 1 and NUMBER_OF_CATEGORIES
+        """
+
         distinct_names = self.session.query(Products.name.distinct()).filter(Products.category == category_id)\
                                                .order_by(desc(Products.note)).limit(10)
 
@@ -123,6 +150,12 @@ class Dbmanager:
             self._products_in_category(category_id)
 
     def _best_product(self, category_id, initial_product_name):
+        """
+        Finding the product with the best note from table Product and printing it
+        :param category_id:  continuation of user input from self.asking_categories
+        :param initial_product_name:  name of the product chosen by user in self._products_in_category
+        """
+
         initial_product = self.session.query(Products).filter(Products.name == initial_product_name).first()
 
         best_product = self.session.query(Products).filter(Products.category == category_id) \
@@ -150,6 +183,12 @@ class Dbmanager:
             self.menu()
 
     def _registering_product(self, initial_product, best_product):
+        """
+        Registering product in History table
+        :param initial_product: product from self._products_in_category
+        :param best_product: product from self._best_product
+        """
+
         inp = input(f"Voulez-vous enregistrer cette recherche ? 1 pour OUI, 2 pour NON : ")
 
         try:
@@ -174,6 +213,12 @@ class Dbmanager:
             self.menu()
 
     def menu(self, first_start=False):
+        """
+        Main menu of the program
+        User can choose between self.asking_categories, self.show_history, self.delete_history or Quit
+        :param first_start:  printing opening lines when user opens the program
+        """
+
         if first_start:
             print(f"\nBienvenue dans l'application {CONSTANTS.LIGHT_YELLOW}Pur Beurre{CONSTANTS.RESET_COLOR}, "
                   f"où vous pourrez substituer des aliments plus sains à vos envies !!")
@@ -208,6 +253,10 @@ class Dbmanager:
             self.menu()
 
     def show_history(self):
+        """
+        Printing all rows from History table in a nice format
+        """
+
         history_list = self.session.query(History).order_by(desc(History.date)).all()
 
         print(ansi.clear_screen())
@@ -223,6 +272,10 @@ class Dbmanager:
         self.menu()
 
     def _delete_history(self):
+        """
+        Deleting all rows from History table
+        """
+
         print(ansi.clear_screen())
         print(f"\n{CONSTANTS.LIGHT_BLUE}Vos recherches enregistrées ont été effacées !")
 

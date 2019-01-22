@@ -6,6 +6,10 @@ from src.dbmanager_alch import Dbmanager, ansi, init
 
 
 class Main:
+    """
+    Initializes API connection, DB connection and user program
+    """
+
     def __init__(self):
         try:
             mkdir(PRODUCTS_JSON_DIR)
@@ -26,6 +30,10 @@ class Main:
 
     @staticmethod
     def initdb():
+        """
+        Initializes DB connection, creation, tables insertions and user program
+        """
+
         database = Dbmanager.creating_table()
         database.inserting_categories()
         database.inserting_products()

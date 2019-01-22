@@ -6,6 +6,9 @@ from src.config import Base
 
 
 class Products(Base):
+    """
+    Product table
+    """
 
     __tablename__ = "products"
 

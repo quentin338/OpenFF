@@ -5,11 +5,19 @@ from src.CONSTANTS import PRODUCTS_JSON, NUMBER_OF_PRODUCTS, NUMBER_OF_CATEGORIE
 
 
 class APIManager:
+    """
+    Initializes connection with Openfoodfacts API and output a JSON file from it
+    """
 
     def __init__(self):
         self.products_data = {"products": []}
 
     def get_categories(self):
+        """
+        GET request to have a list of categories
+        GET requests to loop over the categories to list products from it
+        """
+
         print(f"{GREEN}Téléchargement des produits sur Openfoodfacts.org...", end="")
 
         all_categories_list = requests.get('https://fr.openfoodfacts.org/categories?json=true')
@@ -29,6 +37,12 @@ class APIManager:
             self.get_products(list_products, category_name)
 
     def get_products(self, list_products, category_name):
+        """
+        Creates a dict with all products from all categories to output in JSON format
+        :param list_products: list of products from a category
+        :param category_name: the category name
+        """
+
         for each_product in list_products:
             if '-- fr' in each_product['nutrition_score_debug'] and \
                     each_product['product_name_fr'] != "" \
@@ -54,6 +68,11 @@ class APIManager:
                 pass
 
     def output_to_json(self, dict_to_dump):
+        """
+        Output the JSON file from dict
+        :param dict_to_dump: dict created with all products
+        """
+
         with open(f'{PRODUCTS_JSON_DIR}{PRODUCTS_JSON}', 'a', encoding='utf-8') as outfile:
             json.dump(dict_to_dump, outfile, ensure_ascii=False, indent=4)
 

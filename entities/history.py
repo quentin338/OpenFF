@@ -6,6 +6,9 @@ from src.config import Base
 
 
 class History(Base):
+    """
+    History table
+    """
 
     __tablename__ = "history"
 
