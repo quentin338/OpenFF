@@ -1,20 +1,20 @@
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.mysql import INTEGER
 
-from entities.categories import Categories
+from entities.category import Category
 from src.config import Base
 
 
-class Products(Base):
+class Product(Base):
     """
     Product table
     """
 
-    __tablename__ = "products"
+    __tablename__ = "product"
 
     id = Column('id', INTEGER(display_width=5, unsigned=True), nullable=False, autoincrement=True, primary_key=True)
     category = Column('category', INTEGER(display_width=2, unsigned=True),
-                      ForeignKey(Categories.id), nullable=False)
+                      ForeignKey(Category.id), nullable=False)
     name = Column('name', String(200), nullable=False)
     note = Column('note', INTEGER(display_width=2), nullable=False)
     shop = Column('shop', String(60), nullable=False)

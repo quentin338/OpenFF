@@ -6,9 +6,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 
 import src.CONSTANTS as CONSTANTS
-from entities.categories import Categories
+from entities.category import Category
 from entities.history import History
-from entities.products import Products
+from entities.product import Product
 from src.config import host, username, userpass, dbname, Base
 
 
@@ -43,10 +43,10 @@ class Dbmanager:
 
     def inserting_categories(self):
         """
-        Inserts categories into table Category via downloaded JSON
+        Inserts categories into Category table via downloaded JSON
         """
 
-        if len(self.session.query(Categories).all()) == 0:
+        if len(self.session.query(Category).all()) == 0:
             print(f'{CONSTANTS.GREEN}Création des catégories. ', end="")
 
             with open(f'{CONSTANTS.PRODUCTS_JSON_DIR}{CONSTANTS.PRODUCTS_JSON}', 'r', encoding='utf-8') as infile:
@@ -57,7 +57,7 @@ class Dbmanager:
                     categories.add(product['category_name'])
 
                 for category in categories:
-                    cat = Categories(name=category)
+                    cat = Category(name=category)
                     self.session.add(cat)
 
             self.session.commit()
@@ -70,7 +70,7 @@ class Dbmanager:
         Inserting products into Product table via downloaded JSON
         """
 
-        if len(self.session.query(Products).all()) == 0:
+        if len(self.session.query(Product).all()) == 0:
             print(f'{CONSTANTS.GREEN}Insertion des produits.')
 
             with open(f'{CONSTANTS.PRODUCTS_JSON_DIR}{CONSTANTS.PRODUCTS_JSON}', 'r', encoding='utf-8') as infile:
@@ -81,10 +81,10 @@ class Dbmanager:
                         if "β" not in each_shop:
                             cat, name, note, _, url = each_product.values()
 
-                            category_id = self.session.query(Categories).filter(Categories.name == cat)
+                            category_id = self.session.query(Category).filter(Category.name == cat)
 
                             for row in category_id:
-                                self.session.add(Products(row.id, name, note, each_shop, url))
+                                self.session.add(Product(row.id, name, note, each_shop, url))
 
             self.session.commit()
         else:
@@ -95,7 +95,7 @@ class Dbmanager:
         User program : listing categories from Category table and asking for a choice
         """
 
-        all_categories = self.session.query(Categories).all()
+        all_categories = self.session.query(Category).all()
 
         print(ansi.clear_screen())
         print(f"\nListe des catégories :\n")
@@ -122,8 +122,8 @@ class Dbmanager:
         :param category_id:  user input between 1 and NUMBER_OF_CATEGORIES
         """
 
-        distinct_names = self.session.query(Products.name.distinct()).filter(Products.category == category_id)\
-                                               .order_by(desc(Products.note)).limit(10)
+        distinct_names = self.session.query(Product.name.distinct()).filter(Product.category == category_id)\
+                                               .order_by(desc(Product.note)).limit(10)
 
         products_name = []
         for row in distinct_names:
@@ -156,28 +156,28 @@ class Dbmanager:
         :param initial_product_name:  name of the product chosen by user in self._products_in_category
         """
 
-        initial_product = self.session.query(Products).filter(Products.name == initial_product_name).first()
+        initial_product = self.session.query(Product).filter(Product.name == initial_product_name).first()
 
-        best_product = self.session.query(Products).filter(Products.category == category_id) \
-            .order_by(Products.note).first()
+        best_product = self.session.query(Product).filter(Product.category == category_id) \
+            .order_by(Product.note).first()
 
-        product_shops = self.session.query(Products).filter(Products.name == best_product.name)
+        product_shops = self.session.query(Product).filter(Product.name == best_product.name)
         product_shops_list = set(product.shop for product in product_shops)
         product_shops_list = ", ".join(product_shops_list)
 
         if initial_product.name != best_product.name:
-            print(f"\n\tVous pouvez remplacer l'aliment {CONSTANTS.RED}'{initial_product.name}'{CONSTANTS.RESET_COLOR} "
-                  f"par : {CONSTANTS.LIGHT_GREEN}'{best_product.name}'")
-            print(f"\tCe produit a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} et "
-                  f"est disponible dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}.")
+            print(f"\n\tVous pouvez remplacer l'aliment {CONSTANTS.RED}'{initial_product.name}'{CONSTANTS.RESET_COLOR}"
+                  f" par : {CONSTANTS.LIGHT_GREEN}'{best_product.name}'")
+            print(f"\tCe produit a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} et"
+                  f" est disponible dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}.")
             print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
             self._registering_product(initial_product, best_product)
         else:
             print(f"\n\tLe produit {CONSTANTS.LIGHT_GREEN}'{best_product.name}'{CONSTANTS.RESET_COLOR} "
                   f"est déjà le plus sain de sa catégorie.")
-            print(f'\tIl a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} et est disponible '
-                  f'dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}')
+            print(f'\tIl a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} '
+                  f'et est disponible dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}')
             print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
             self.menu()
@@ -208,7 +208,8 @@ class Dbmanager:
                 self._registering_product(initial_product, best_product)
         except IntegrityError:
             print(ansi.clear_screen())
-            print(f"\n{CONSTANTS.LIGHT_YELLOW}Cette recherche a déjà été enregistrée. Retrouvez-la en tapant 2 dans le menu.")
+            print(f"\n{CONSTANTS.LIGHT_YELLOW}Cette recherche a déjà été enregistrée. "
+                  f"Retrouvez-la en tapant 2 dans le menu.")
             self.session.rollback()
             self.menu()
 
@@ -261,11 +262,12 @@ class Dbmanager:
 
         print(ansi.clear_screen())
         for row in history_list:
-            initial_product = self.session.query(Products).filter(Products.id == row.id_initial_product).first()
-            new_product = self.session.query(Products).filter(Products.id == row.id_new_product).first()
+            initial_product = self.session.query(Product).filter(Product.id == row.id_initial_product).first()
+            new_product = self.session.query(Product).filter(Product.id == row.id_new_product).first()
 
             print(f"\n\tNous vous proposons de remplacer le produit "
-                  f"'{CONSTANTS.RED}{initial_product.name}'{CONSTANTS.RESET_COLOR} par {CONSTANTS.LIGHT_GREEN}'{new_product.name}'.")
+                  f"'{CONSTANTS.RED}{initial_product.name}'{CONSTANTS.RESET_COLOR} par "
+                  f"{CONSTANTS.LIGHT_GREEN}'{new_product.name}'.")
             print(f"\tPlus d'informations disponibles sur ce produit ici : {new_product.url}")
             print("\t****")
 

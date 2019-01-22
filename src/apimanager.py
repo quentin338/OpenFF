@@ -70,7 +70,7 @@ class APIManager:
     def output_to_json(self, dict_to_dump):
         """
         Output the JSON file from dict
-        :param dict_to_dump: dict created with all products
+        :param dict_to_dump: dict created with all products from all categories
         """
 
         with open(f'{PRODUCTS_JSON_DIR}{PRODUCTS_JSON}', 'a', encoding='utf-8') as outfile:

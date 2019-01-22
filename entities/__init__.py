@@ -1,3 +1,3 @@
-from . import categories
+from . import category
 from . import history
-from . import products
+from . import product
