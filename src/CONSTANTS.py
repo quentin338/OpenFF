@@ -4,7 +4,6 @@ NUMBER_OF_CATEGORIES = 10
 NUMBER_OF_PRODUCTS = 30
 PRODUCTS_JSON = 'products_output.json'
 PRODUCTS_JSON_DIR = 'data/'
-MENU_LIST = ["1", "2", "e", "q", "E", "Q"]
 
 # CONSOLE COLORS
 

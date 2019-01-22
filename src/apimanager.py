@@ -10,7 +10,6 @@ class APIManager:
         self.products_data = {"products": []}
 
     def get_categories(self):
-
         print(f"{GREEN}Téléchargement des produits sur Openfoodfacts.org...", end="")
 
         all_categories_list = requests.get('https://fr.openfoodfacts.org/categories?json=true')
@@ -25,15 +24,11 @@ class APIManager:
                     {category_name_for_url}&sort_by=unique_scans_n&page_size={NUMBER_OF_PRODUCTS}&json=true"
 
             all_products = requests.get(full_url)
-
             list_products = all_products.json()["products"]
-
             print(".", end="")
-
             self.get_products(list_products, category_name)
 
     def get_products(self, list_products, category_name):
-
         for each_product in list_products:
             if '-- fr' in each_product['nutrition_score_debug'] and \
                     each_product['product_name_fr'] != "" \
@@ -59,7 +54,6 @@ class APIManager:
                 pass
 
     def output_to_json(self, dict_to_dump):
-
         with open(f'{PRODUCTS_JSON_DIR}{PRODUCTS_JSON}', 'a', encoding='utf-8') as outfile:
             json.dump(dict_to_dump, outfile, ensure_ascii=False, indent=4)
 

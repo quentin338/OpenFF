@@ -12,6 +12,7 @@ class Main:
             print(f'Creating "{PRODUCTS_JSON_DIR}" directory...')
         except FileExistsError:
             pass
+
         if PRODUCTS_JSON not in listdir(PRODUCTS_JSON_DIR):
             api = APIManager()
             api.get_categories()
