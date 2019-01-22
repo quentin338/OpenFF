@@ -109,11 +109,13 @@ class Dbmanager:
                 self._products_in_category(user_input)
             else:
                 print(ansi.clear_screen())
-                print(f"{CONSTANTS.RED}Entrée invalide. Veuillez choisir un nombre entre 1 et {CONSTANTS.NUMBER_OF_CATEGORIES}.")
+                print(f"{CONSTANTS.RED}Entrée invalide. Veuillez choisir un nombre entre 1 et "
+                      f"{CONSTANTS.NUMBER_OF_CATEGORIES}.")
                 self.asking_categories()
         except ValueError:
             print(ansi.clear_screen())
-            print(f"{CONSTANTS.RED}Entrée invalide. Veuillez choisir un nombre entre 1 et {CONSTANTS.NUMBER_OF_CATEGORIES} : ")
+            print(f"{CONSTANTS.RED}Entrée invalide. Veuillez choisir un nombre entre 1 et "
+                  f"{CONSTANTS.NUMBER_OF_CATEGORIES} : ")
             self.asking_categories()
 
     def _products_in_category(self, category_id):
@@ -169,7 +171,7 @@ class Dbmanager:
             print(f"\n\tVous pouvez remplacer l'aliment {CONSTANTS.RED}'{initial_product.name}'{CONSTANTS.RESET_COLOR}"
                   f" par : {CONSTANTS.LIGHT_GREEN}'{best_product.name}'")
             print(f"\tCe produit a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} et"
-                  f" est disponible dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}.")
+                  f" est disponible dans le(s) magasin(s) {CONSTANTS.LIGHT_GREEN}{product_shops_list}.")
             print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
             self._registering_product(initial_product, best_product)
@@ -177,7 +179,7 @@ class Dbmanager:
             print(f"\n\tLe produit {CONSTANTS.LIGHT_GREEN}'{best_product.name}'{CONSTANTS.RESET_COLOR} "
                   f"est déjà le plus sain de sa catégorie.")
             print(f'\tIl a une note de {CONSTANTS.LIGHT_GREEN}{best_product.note}{CONSTANTS.RESET_COLOR} '
-                  f'et est disponible dans le(s) magasin(s) {CONSTANTS.GREEN}{product_shops_list}')
+                  f'et est disponible dans le(s) magasin(s) {CONSTANTS.LIGHT_GREEN}{product_shops_list}')
             print(f"\tPlus d'informations disponibles sur le produit ici : {best_product.url}\n")
 
             self.menu()

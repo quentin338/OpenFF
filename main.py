@@ -13,7 +13,7 @@ class Main:
     def __init__(self):
         try:
             mkdir(PRODUCTS_JSON_DIR)
-            print(f'Creating "{PRODUCTS_JSON_DIR}" directory...')
+            print(f'{GREEN}Creating "{PRODUCTS_JSON_DIR}" directory...')
         except FileExistsError:
             pass
 
