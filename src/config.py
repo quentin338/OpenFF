@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 host = 'localhost'
 username = 'root'
-userpass = 'rootOC'
+userpass = ''
 
 dbname = 'openfoodfacts'
 
