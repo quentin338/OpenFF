@@ -1,5 +1,6 @@
 # OpenFF
 Project 5 OC - OpenFoodFacts
+Python 3.7
 
 ***
 
@@ -18,20 +19,13 @@ Project 5 OC - OpenFoodFacts
 
 - *requests*
 - *mysql-connector*
+- *mysql-connector-python*
 - *mysql-alchemy*
 - *colorama*
 
 ## TO USE
 
 - **Insert your MySQL name/pass in config.py in /src**
-
-## Need to zip and upload at the end
-
-- *Text to explain problems/answers/why* - *PDF 2 pages max with github link*
-- *Trello*
-- *Text with github link only ?*
-- *Script to create DB*
-- *Relational model - StarUML*
 
 ## Done
 
