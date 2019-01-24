@@ -1,6 +1,5 @@
 # OpenFF
 Project 5 OC - OpenFoodFacts
-Python 3.7
 
 ***
 
@@ -25,6 +24,7 @@ Python 3.7
 
 ## TO USE
 
+- **Python 3.7**
 - **Insert your MySQL name/pass in config.py in /src**
 
 ## Done
